@@ -11,7 +11,7 @@ class BancoDePrecos {
     fun cadastraPrecoCombustivel(tipo: String,
                                  data: String,
                                  valor: Float,
-                                 nomeMunicipio: String,
+                                 municipio: String,
                                  regiao: String,
                                  UF: String,
                                  qtdPostos: Int): Combustivel {
@@ -21,7 +21,7 @@ class BancoDePrecos {
         combustivel.tipo = tipo
         combustivel.data = data
         combustivel.valor = valor
-        combustivel.municipio = nomeMunicipio
+        combustivel.municipio = municipio
         combustivel.regiao = regiao
         combustivel.UF = UF
         combustivel.qtdPostos = qtdPostos
@@ -53,16 +53,16 @@ class BancoDePrecos {
         return cotacao
     }
 
-    fun consultaPrecos(data: String, tipo: String, nomeMunicipio: String, UF: String): Consulta {
+    fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Consulta {
         var consulta = Consulta()
 
-        consulta.tipoCombustivel = tipo
+        consulta.tipoCombustivel = tipoCombustivel
         consulta.data = data
-        consulta.municipio = nomeMunicipio
+        consulta.municipio = municipio
         consulta.UF = UF
 
-        var preco = precosCombustiveis.filter { Combustivel ->
-            Combustivel.tipo == tipo && Combustivel.data == data && Combustivel.municipio == nomeMunicipio && Combustivel.UF == UF
+        var precoCombustivel = precosCombustiveis.filter { Combustivel ->
+            Combustivel.tipo == tipoCombustivel && Combustivel.data == data && Combustivel.municipio == municipio && Combustivel.UF == UF
         }.first()
 
         var cotacaoDolar = cotacoesDolar.filter { Dolar ->
@@ -72,6 +72,10 @@ class BancoDePrecos {
         var cotacaoPetroleo = cotacoesBarrilDePetroleo.filter { Petroleo ->
             Petroleo.data == data
         }.first()
+
+        consulta.preco = precoCombustivel.valor
+        consulta.cotacaoDolar = cotacaoDolar.valor
+        consulta.cotacaoPetroleo = cotacaoPetroleo.valor
 
         return consulta
     }

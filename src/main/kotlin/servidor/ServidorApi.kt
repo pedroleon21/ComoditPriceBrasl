@@ -65,12 +65,12 @@ fun Route.cadastraPrecoCombustivel() {
     post("/commoditie/combustivel"){
         val precoCombustivel: Combustivel = call.receive<Combustivel>()
         val precoCadastrado = bancoprecos.cadastraPrecoCombustivel(
-            precoCombustivel.tipo!!,
-            precoCombustivel.data!!,
+            precoCombustivel.tipo,
+            precoCombustivel.data,
             precoCombustivel.valor,
-            precoCombustivel.municipio!!,
-            precoCombustivel.regiao!!,
-            precoCombustivel.UF!!,
+            precoCombustivel.municipio,
+            precoCombustivel.regiao,
+            precoCombustivel.UF,
             precoCombustivel.qtdPostos
         )
         call.respond(precoCadastrado)
@@ -80,7 +80,7 @@ fun Route.cadastraPrecoCombustivel() {
 fun Route.cadastraCotacaoDolar() {
     post("/commoditie/moeda"){
         val cotacaoDolar: Dolar = call.receive<Dolar>()
-        val cotacaoCadastrada = bancoprecos.cadastraCotacaoDolar(cotacaoDolar.data!!, cotacaoDolar.valor)
+        val cotacaoCadastrada = bancoprecos.cadastraCotacaoDolar(cotacaoDolar.data, cotacaoDolar.valor)
         call.respond(cotacaoDolar)
     }
 }
@@ -88,7 +88,7 @@ fun Route.cadastraCotacaoDolar() {
 fun Route.cadastraCotacaoPetroleo() {
     post("/commoditie/materiaprima") {
         val cotacaoPetroleo: Petroleo = call.receive<Petroleo>()
-        val cotacaoCadastrada = bancoprecos.cadastraCotacaoPetroleo(cotacaoPetroleo.data!!,
+        val cotacaoCadastrada = bancoprecos.cadastraCotacaoPetroleo(cotacaoPetroleo.data,
             cotacaoPetroleo.valor)
         call.respond(cotacaoCadastrada)
     }
