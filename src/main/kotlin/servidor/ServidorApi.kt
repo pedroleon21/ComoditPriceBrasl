@@ -4,7 +4,6 @@ import BancoDePrecos
 import commoditie.combustivel.Combustivel
 import commoditie.materiaprima.Petroleo
 import commoditie.moeda.Dolar
-import commoditie.combustivel.local.Local
 import consulta.CombustivelConsulta
 import consultaPrecos.cotacoes.Cotacoes
 import consultaPrecos.extremos.Extremos
