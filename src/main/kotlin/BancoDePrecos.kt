@@ -1,44 +1,31 @@
 import commoditie.combustivel.Combustivel
 import commoditie.moeda.Dolar
 import commoditie.materiaprima.Petroleo
-import consulta.Consulta
-import commoditie.combustivel.local.Local
+import consultaPrecos.cotacoes.Cotacoes
+import consultaPrecos.extremos.Extremos
 
 class BancoDePrecos {
-    var localizaCombustivel = mutableListOf<Local>()
     var precosCombustiveis = mutableListOf<Combustivel>()
     var cotacoesDolar = mutableListOf<Dolar>()
     var cotacoesBarrilDePetroleo = mutableListOf<Petroleo>()
 
-    fun cadastraLocalCombustivel(
-        municipio: String,
-        regiao: String,
-        uf: String,
-        qtdPostos: Int
-    ): Local {
+    fun cadastraPrecoCombustivel(tipo: String,
+                                 data: String,
+                                 valor: Float,
+                                 municipio: String,
+                                 regiao: String,
+                                 UF: String,
+                                 qtdPostos: Int): Combustivel {
 
-        val local = Local()
-        local.municipio = municipio
-        local.regiao = regiao
-        local.uf = uf
-        local.qtdPostos = qtdPostos
-
-        localizaCombustivel.add(local)
-
-        return local
-    }
-
-    fun cadastraPrecoCombustivel(
-        tipo: String,
-        data: String,
-        valor: Float
-    ): Combustivel {
-
-        val combustivel = Combustivel()
+        var combustivel = Combustivel()
 
         combustivel.tipo = tipo
         combustivel.data = data
         combustivel.valor = valor
+        combustivel.municipio = municipio
+        combustivel.regiao = regiao
+        combustivel.UF = UF
+        combustivel.qtdPostos = qtdPostos
 
         precosCombustiveis.add(combustivel)
 
@@ -67,20 +54,16 @@ class BancoDePrecos {
         return cotacao
     }
 
-    fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Consulta {
-        var consulta = Consulta()
+    fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Cotacoes {
+        var consulta = Cotacoes()
 
         consulta.tipoCombustivel = tipoCombustivel
         consulta.data = data
         consulta.municipio = municipio
         consulta.UF = UF
 
-        var localCombustivel = localizaCombustivel.filter { Local ->
-            Local.municipio == municipio && Local.uf == UF
-        }.first()
-
         var precoCombustivel = precosCombustiveis.filter { Combustivel ->
-            Combustivel.tipo == tipoCombustivel && Combustivel.data == data
+            Combustivel.tipo == tipoCombustivel && Combustivel.data == data && Combustivel.municipio == municipio && Combustivel.UF == UF
         }.first()
 
         var cotacaoDolar = cotacoesDolar.filter { Dolar ->
@@ -97,5 +80,21 @@ class BancoDePrecos {
 
         return consulta
     }
-}
 
+    fun rankingPrecos(data: String, tipo: String, UF: String): Extremos{
+
+        var ranking = Extremos()
+
+        ranking.UF = UF
+        ranking.data = data
+        ranking.tipoCombustivel = tipo
+
+        var menorPreco = precosCombustiveis.filter{it.data == data && it.UF == UF && it.tipo == tipo}?.minOf { it.valor }
+        var municipio = precosCombustiveis.filter{it.data == data && it.UF == UF && it.tipo == tipo}?.minByOrNull { it.valor }?.municipio
+
+        ranking.menorpreco = menorPreco
+        ranking.municipio = municipio.toString()
+
+        return ranking
+    }
+}
