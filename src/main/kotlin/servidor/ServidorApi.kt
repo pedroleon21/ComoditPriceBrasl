@@ -6,6 +6,7 @@ import commoditie.combustivel.Combustivel
 import commoditie.materiaprima.Petroleo
 import commoditie.moeda.Dolar
 import commoditie.combustivel.local.Local
+import consulta.CombustivelConsulta
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
@@ -44,6 +45,7 @@ fun Application.bancoprecos(testing: Boolean = false) {
         cadastraCotacaoDolar()
         cadastraCotacaoPetroleo()
         consultaPrecos()
+        consultaPrecoCombustiveis()
     }
 }
 
@@ -116,5 +118,13 @@ fun Route.consultaPrecos() {
             consulta.municipio,
             consulta.UF)
         call.respond(consultaRealizada)
+    }
+}
+
+fun Route.consultaPrecoCombustiveis(){
+    get("/preco/combustiveis"){
+        var consulta = CombustivelConsulta()
+        var listaCombutiveis = consulta.getAllPrecos()
+        call.respond(listaCombutiveis)
     }
 }
