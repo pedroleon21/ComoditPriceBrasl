@@ -3,6 +3,7 @@ package servidor
 import BancoDePrecos
 import consulta.Consulta
 import commoditie.combustivel.Combustivel
+import commoditie.combustivel.local.Local
 import commoditie.materiaprima.Petroleo
 import commoditie.moeda.Dolar
 import io.ktor.application.*
@@ -37,7 +38,8 @@ fun Application.bancoprecos(testing: Boolean = false) {
 
     routing {
         meuindex()
-        cadastraPrecoCombustivel()
+        var localCad: Local = cadastraLocalCombustivel()
+        cadastraPrecoCombustivel(localCad)
         cadastraCotacaoDolar()
         cadastraCotacaoPetroleo()
         consultaPrecos()
@@ -51,28 +53,50 @@ fun Route.meuindex() {
                 h1 { +"Banco de Preços de Combustíveis e Cotações do Dólar e Barril do Petróleo" }
                 p { +"Obtenha informações de preços de combustíveis por município acompanhados das cotações do Dólar e do Barril de Petróleo Brent na data desejada" }
                 ul {
-                    ol { +"POST - /commoditie/combustivel  - Cadastra Preço de Combustível" }
-                    ol { +"POST - /commoditie/moeda        - Cadastra Cotação do Dólar" }
-                    ol { +"POST - /commoditie/materiaprima - Cadastra Cotação do Barril de Petróleo Brent" }
-                    ol { +"GET  - /precos                  - Consultar Preços e Cotações"}
+                    ol { +"POST - /commoditie/combustivel/local  - Cadastra Local do Combustivel"}
+                    ol { +"POST - /commoditie/combustivel        - Cadastra Preço de Combustível" }
+                    ol { +"POST - /commoditie/moeda              - Cadastra Cotação do Dólar" }
+                    ol { +"POST - /commoditie/materiaprima       - Cadastra Cotação do Barril de Petróleo Brent" }
+                    ol { +"GET  - /precos                        - Consultar Preços e Cotações"}
                 }
             }
         }
     }
 }
 
-fun Route.cadastraPrecoCombustivel() {
+fun Route.cadastraLocalCombustivel(): Local {
+    var loc: Local = Local()
+    post("/commoditie/combustivel/local"){
+        val localCombustivel: Local = call.receive<Local>()
+        val localCadastrado = bancoprecos.cadastraLocalCombustivel(
+            localCombustivel.municipio,
+            localCombustivel.regiao,
+            localCombustivel.uf,
+            localCombustivel.qtdPostos
+        )
+        call.respond(localCadastrado)
+        loc.municipio = localCadastrado.municipio
+        loc.regiao = localCadastrado.regiao
+        loc.uf = localCadastrado.uf
+        loc.qtdPostos = localCadastrado.qtdPostos
+    }
+    return loc
+}
+
+fun Route.cadastraPrecoCombustivel(novoLocal: Local) {
     post("/commoditie/combustivel"){
         val precoCombustivel: Combustivel = call.receive<Combustivel>()
         val precoCadastrado = bancoprecos.cadastraPrecoCombustivel(
             precoCombustivel.tipo,
             precoCombustivel.data,
             precoCombustivel.valor,
-            precoCombustivel.municipio,
-            precoCombustivel.regiao,
-            precoCombustivel.UF,
-            precoCombustivel.qtdPostos
+            novoLocal
         )
+        precoCadastrado.local?.municipio = novoLocal.municipio
+        precoCadastrado.local?.regiao = novoLocal.regiao
+        precoCadastrado.local?.uf = novoLocal.uf
+        precoCadastrado.local?.qtdPostos = novoLocal.qtdPostos
+
         call.respond(precoCadastrado)
     }
 }

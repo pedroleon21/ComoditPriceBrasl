@@ -1,30 +1,46 @@
 import commoditie.combustivel.Combustivel
+import commoditie.combustivel.local.Local
 import commoditie.moeda.Dolar
 import commoditie.materiaprima.Petroleo
 import consulta.Consulta
 
 class BancoDePrecos {
+    var localizaCombustivel = mutableListOf<Local>()
     var precosCombustiveis = mutableListOf<Combustivel>()
     var cotacoesDolar = mutableListOf<Dolar>()
     var cotacoesBarrilDePetroleo = mutableListOf<Petroleo>()
 
+    fun cadastraLocalCombustivel(municipio: String,
+                                 regiao: String,
+                                 uf: String,
+                                 qtdPostos: Int): Local {
+
+        var local = Local()
+
+        local.municipio = municipio
+        local.regiao = regiao
+        local.uf = uf
+        local.qtdPostos = qtdPostos
+
+        localizaCombustivel.add(local)
+
+        return local
+    }
+
     fun cadastraPrecoCombustivel(tipo: String,
                                  data: String,
                                  valor: Float,
-                                 municipio: String,
-                                 regiao: String,
-                                 UF: String,
-                                 qtdPostos: Int): Combustivel {
+                                 local: Local): Combustivel {
 
         var combustivel = Combustivel()
 
         combustivel.tipo = tipo
         combustivel.data = data
         combustivel.valor = valor
-        combustivel.municipio = municipio
-        combustivel.regiao = regiao
-        combustivel.UF = UF
-        combustivel.qtdPostos = qtdPostos
+        combustivel.local?.municipio = local.municipio
+        combustivel.local?.regiao = local.regiao
+        combustivel.local?.uf = local.uf
+        combustivel.local?.qtdPostos = local.qtdPostos
 
         precosCombustiveis.add(combustivel)
 
@@ -62,7 +78,7 @@ class BancoDePrecos {
         consulta.UF = UF
 
         var precoCombustivel = precosCombustiveis.filter { Combustivel ->
-            Combustivel.tipo == tipoCombustivel && Combustivel.data == data && Combustivel.municipio == municipio && Combustivel.UF == UF
+            Combustivel.tipo == tipoCombustivel && Combustivel.data == data && Combustivel.local?.municipio == municipio && Combustivel.local?.uf == UF
         }.first()
 
         var cotacaoDolar = cotacoesDolar.filter { Dolar ->
