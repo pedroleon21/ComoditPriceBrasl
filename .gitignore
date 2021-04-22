@@ -1,6 +1,5 @@
-#intellij
+/build
+/.gradle
+gradlew.bat
+gradlew
 .idea/
-
-# Gradle files
-.gradle/
-build/
