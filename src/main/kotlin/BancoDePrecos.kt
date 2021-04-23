@@ -1,8 +1,9 @@
 import commoditie.combustivel.Combustivel
-import commoditie.combustivel.local.Local
 import commoditie.moeda.Dolar
 import commoditie.materiaprima.Petroleo
-import consulta.Consulta
+import consultaPrecos.cotacoes.Cotacoes
+import consultaPrecos.extremos.Extremos
+import commoditie.combustivel.local.Local
 
 class BancoDePrecos {
     var localizaCombustivel = mutableListOf<Local>()
@@ -69,8 +70,8 @@ class BancoDePrecos {
         return cotacao
     }
 
-    fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Consulta {
-        var consulta = Consulta()
+    fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Cotacoes {
+        var consulta = Cotacoes()
 
         consulta.tipoCombustivel = tipoCombustivel
         consulta.data = data
@@ -94,6 +95,23 @@ class BancoDePrecos {
         consulta.cotacaoPetroleo = cotacaoPetroleo.valor
 
         return consulta
+    }
+
+    fun rankingPrecos(data: String, tipo: String, UF: String): Extremos{
+
+        var ranking = Extremos()
+
+        ranking.UF = UF
+        ranking.data = data
+        ranking.tipoCombustivel = tipo
+
+        var menorPreco = precosCombustiveis.filter{it.data == data && it.local?.uf == UF && it.tipo == tipo}?.minOf { it.valor }
+        var municipio = precosCombustiveis.filter{it.data == data && it.local?.uf == UF && it.tipo == tipo}?.minByOrNull { it.valor }
+
+        ranking.menorpreco = menorPreco
+        ranking.municipio = municipio.toString()
+
+        return ranking
     }
 }
 

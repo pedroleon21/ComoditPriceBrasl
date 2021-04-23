@@ -5,5 +5,5 @@ import commoditie.combustivel.local.Local
 
 class Combustivel: Commoditie() {
     var tipo: String = ""
-    var local: Local? = null
+    var local: Local = Local()
 }
