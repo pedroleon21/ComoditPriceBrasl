@@ -1,8 +1,8 @@
-package consultaPrecos.cotacoes
+package preco.cotacao
 
-import consultaPrecos.Consulta
+import preco.Preco
 
-class Cotacoes: Consulta() {
+class Cotacao: Preco() {
     var preco: Float = 0.0F
     var cotacaoDolar: Float = 0.0F
     var cotacaoPetroleo: Float = 0.0F

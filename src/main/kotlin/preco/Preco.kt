@@ -1,6 +1,6 @@
-package consultaPrecos
+package preco
 
-abstract class Consulta {
+abstract class Preco {
     var tipoCombustivel: String = ""
     var data: String = ""
     var municipio: String = ""

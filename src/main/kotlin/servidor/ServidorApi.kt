@@ -5,8 +5,8 @@ import commoditie.combustivel.Combustivel
 import commoditie.materiaprima.Petroleo
 import commoditie.moeda.Dolar
 import consulta.CombustivelConsulta
-import consultaPrecos.cotacoes.Cotacoes
-import consultaPrecos.extremos.Extremos
+import preco.cotacao.Cotacao
+import preco.minimo.Minimo
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
@@ -101,7 +101,7 @@ fun Route.cadastraCotacaoPetroleo() {
 
 fun Route.consultaPrecos() {
     get("/precos") {
-        var consulta: Cotacoes = call.receive<Cotacoes>()
+        var consulta: Cotacao = call.receive<Cotacao>()
         var consultaRealizada = bancoprecos.consultaPrecos(consulta.data,
             consulta.tipoCombustivel,
             consulta.municipio,
@@ -119,9 +119,9 @@ fun Route.consultaPrecoCombustiveis(){
 }
 fun Route.consultaPrecoEstado(){
     get("/precos/estado") {
-        var rankingEstado: Extremos = call.receive<Extremos>()
-        var menorPreco = bancoprecos.rankingPrecos(rankingEstado.data,
-            rankingEstado.tipoCombustivel, rankingEstado.UF)
+        var consulta: Minimo = call.receive<Minimo>()
+        var menorPreco = bancoprecos.consultaMenorPreco(consulta.data,
+            consulta.tipoCombustivel, consulta.UF)
         call.respond(menorPreco)
     }
 }
