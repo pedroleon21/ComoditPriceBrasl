@@ -57,11 +57,12 @@ fun Route.meuindex() {
                 h1 { +"Banco de Preços de Combustíveis e Cotações do Dólar e Barril do Petróleo" }
                 p { +"Obtenha informações de preços de combustíveis por município acompanhados das cotações do Dólar e do Barril de Petróleo Brent na data desejada" }
                 ul {
-                    ol { +"POST - /commoditie/combustivel  - Cadastra Preço de Combustível" }
-                    ol { +"POST - /commoditie/moeda        - Cadastra Cotação do Dólar" }
-                    ol { +"POST - /commoditie/materiaprima - Cadastra Cotação do Barril de Petróleo Brent" }
-                    ol { +"GET  - /precos                  - Consultar Preços e Cotações"}
-                    ol { +"GET  - /precos/estado           - Consultar Menor Preço por Estado"}
+                    ol { +"POST - /commoditie/combustivel/local - Cadastra Local do Combustivel"}
+                    ol { +"POST - /commoditie/combustivel       - Cadastra Preço de Combustível" }
+                    ol { +"POST - /commoditie/moeda             - Cadastra Cotação do Dólar" }
+                    ol { +"POST - /commoditie/materiaprima      - Cadastra Cotação do Barril de Petróleo Brent" }
+                    ol { +"GET  - /precos                       - Consultar Preços e Cotações"}
+                    ol { +"GET  - /precos/estado                - Consultar Menor Preço por Estado"}
                 }
             }
         }
@@ -90,10 +91,10 @@ fun Route.cadastraLocalCombustivel(): Local {
 fun Route.cadastraPrecoCombustivel(localCad: Local) {
     post("/commoditie/combustivel"){
         val precoCombustivel: Combustivel = call.receive<Combustivel>()
-        precoCombustivel.local?.municipio = localCad.municipio
-        precoCombustivel.local?.regiao = localCad.regiao
-        precoCombustivel.local?.uf = localCad.uf
-        precoCombustivel.local?.qtdPostos = localCad.qtdPostos
+        precoCombustivel.local!!.municipio = localCad.municipio
+        precoCombustivel.local!!.regiao = localCad.regiao
+        precoCombustivel.local!!.uf = localCad.uf
+        precoCombustivel.local!!.qtdPostos = localCad.qtdPostos
         val precoCadastrado = bancoprecos.cadastraPrecoCombustivel(
             precoCombustivel.tipo,
             precoCombustivel.data,

@@ -6,7 +6,6 @@ import consultaPrecos.extremos.Extremos
 import commoditie.combustivel.local.Local
 
 class BancoDePrecos {
-    var localizaCombustivel = mutableListOf<Local>()
     var precosCombustiveis = mutableListOf<Combustivel>()
     var cotacoesDolar = mutableListOf<Dolar>()
     var cotacoesBarrilDePetroleo = mutableListOf<Petroleo>()
@@ -23,8 +22,6 @@ class BancoDePrecos {
         local.uf = uf
         local.qtdPostos = qtdPostos
 
-        localizaCombustivel.add(local)
-
         return local
     }
 
@@ -38,10 +35,10 @@ class BancoDePrecos {
         combustivel.tipo = tipo
         combustivel.data = data
         combustivel.valor = valor
-        combustivel.local?.municipio = local.municipio
-        combustivel.local?.regiao = local.regiao
-        combustivel.local?.uf = local.uf
-        combustivel.local?.qtdPostos = local.qtdPostos
+        combustivel.local!!.municipio = local.municipio
+        combustivel.local!!.regiao = local.regiao
+        combustivel.local!!.uf = local.uf
+        combustivel.local!!.qtdPostos = local.qtdPostos
 
         precosCombustiveis.add(combustivel)
 
@@ -79,7 +76,7 @@ class BancoDePrecos {
         consulta.UF = UF
 
         var precoCombustivel = precosCombustiveis.filter { Combustivel ->
-            Combustivel.tipo == tipoCombustivel && Combustivel.data == data && Combustivel.local?.municipio == municipio && Combustivel.local?.uf == UF
+            Combustivel.tipo == tipoCombustivel && Combustivel.data == data && Combustivel.local!!.municipio == municipio && Combustivel.local!!.uf == UF
         }.first()
 
         var cotacaoDolar = cotacoesDolar.filter { Dolar ->
@@ -105,8 +102,8 @@ class BancoDePrecos {
         ranking.data = data
         ranking.tipoCombustivel = tipo
 
-        var menorPreco = precosCombustiveis.filter{it.data == data && it.local?.uf == UF && it.tipo == tipo}?.minOf { it.valor }
-        var municipio = precosCombustiveis.filter{it.data == data && it.local?.uf == UF && it.tipo == tipo}?.minByOrNull { it.valor }
+        var menorPreco = precosCombustiveis.filter{it.data == data && it.local!!.uf == UF && it.tipo == tipo}!!.minOf { it.valor }
+        var municipio = precosCombustiveis.filter{it.data == data && it.local!!.uf == UF && it.tipo == tipo}!!.minByOrNull { it.valor }!!.local.municipio
 
         ranking.menorpreco = menorPreco
         ranking.municipio = municipio.toString()
