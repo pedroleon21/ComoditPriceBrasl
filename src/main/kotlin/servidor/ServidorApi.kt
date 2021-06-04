@@ -109,15 +109,14 @@ fun Route.cadastraCotacaoDolar() {
     post("/commoditie/moeda"){
         val cotacaoDolar: Dolar = call.receive<Dolar>()
         val cotacaoCadastrada = bancoprecos.cadastraCotacaoDolar(cotacaoDolar.data, cotacaoDolar.valor)
-        call.respond(cotacaoDolar)
+        call.respond(cotacaoCadastrada)
     }
 }
 
 fun Route.cadastraCotacaoPetroleo() {
     post("/commoditie/materiaprima") {
         val cotacaoPetroleo: Petroleo = call.receive<Petroleo>()
-        val cotacaoCadastrada = bancoprecos.cadastraCotacaoPetroleo(cotacaoPetroleo.data,
-            cotacaoPetroleo.valor)
+        val cotacaoCadastrada = bancoprecos.cadastraCotacaoPetroleo(cotacaoPetroleo.data)
         call.respond(cotacaoCadastrada)
     }
 }

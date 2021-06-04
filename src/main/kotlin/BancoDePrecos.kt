@@ -4,6 +4,7 @@ import commoditie.materiaprima.Petroleo
 import consultaPrecos.cotacoes.Cotacoes
 import consultaPrecos.extremos.Extremos
 import commoditie.combustivel.local.Local
+import scraping.PetroleoScrapper
 
 class BancoDePrecos {
     var precosCombustiveis = mutableListOf<Combustivel>()
@@ -35,10 +36,10 @@ class BancoDePrecos {
         combustivel.tipo = tipo
         combustivel.data = data
         combustivel.valor = valor
-        combustivel.local!!.municipio = local.municipio
-        combustivel.local!!.regiao = local.regiao
-        combustivel.local!!.uf = local.uf
-        combustivel.local!!.qtdPostos = local.qtdPostos
+        combustivel.local.municipio = local.municipio
+        combustivel.local.regiao = local.regiao
+        combustivel.local.uf = local.uf
+        combustivel.local.qtdPostos = local.qtdPostos
 
         precosCombustiveis.add(combustivel)
 
@@ -56,11 +57,18 @@ class BancoDePrecos {
         return cotacao
     }
 
-    fun cadastraCotacaoPetroleo(data: String, valor: Float): Petroleo {
+    fun cadastraCotacaoPetroleo(data: String): Petroleo {
         var cotacao = Petroleo()
+        var scrap = PetroleoScrapper()
+        var valor: Float? = scrap.getPrecoPetroleo(data)
+
 
         cotacao.data = data
-        cotacao.valor = valor
+        if (valor != null) {
+            cotacao.valor = valor
+        } else {
+            cotacao.valor = 0.0F
+        }
 
         cotacoesBarrilDePetroleo.add(cotacao)
 
@@ -87,9 +95,9 @@ class BancoDePrecos {
             Petroleo.data == data
         }.first()
 
-        consulta.preco = precoCombustivel.valor
-        consulta.cotacaoDolar = cotacaoDolar.valor
-        consulta.cotacaoPetroleo = cotacaoPetroleo.valor
+        consulta.preco = precoCombustivel.valor!!
+        consulta.cotacaoDolar = cotacaoDolar.valor!!
+        consulta.cotacaoPetroleo = cotacaoPetroleo.valor!!
 
         return consulta
     }
@@ -102,8 +110,8 @@ class BancoDePrecos {
         ranking.data = data
         ranking.tipoCombustivel = tipo
 
-        var menorPreco = precosCombustiveis.filter{it.data == data && it.local!!.uf == UF && it.tipo == tipo}!!.minOf { it.valor }
-        var municipio = precosCombustiveis.filter{it.data == data && it.local!!.uf == UF && it.tipo == tipo}!!.minByOrNull { it.valor }!!.local.municipio
+        var menorPreco = precosCombustiveis.filter { it.data == data && it.local.uf == UF && it.tipo == tipo }.minOf { it.valor }
+        var municipio = precosCombustiveis.filter { it.data == data && it.local.uf == UF && it.tipo == tipo }.minByOrNull { it?.valor }!!.local.municipio
 
         ranking.menorpreco = menorPreco
         ranking.municipio = municipio.toString()
