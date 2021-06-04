@@ -158,9 +158,8 @@ fun Route.consultaPrecoEstado(){
 fun Route.treinaModelo() {
     get("/precos/modelo"){
         val siglaEstado = call.receive<String>()
-        val municipio = call.receive<String>()
         val tipoCombustivel = call.receive<String>()
-        val registros = bancoprecos.getDadosTreinamento(siglaEstado,municipio,tipoCombustivel)
+        val registros = bancoprecos.getDadosTreinamento(siglaEstado,tipoCombustivel)
         val modeloTreinado = bancoprecos.treinaModelo(registros)
         call.respond(modeloTreinado)
     }
@@ -169,8 +168,8 @@ fun Route.treinaModelo() {
 fun Route.calculaPrevisao() {
     get("/precos/modelo/previsao"){
         val modeloTreinado = call.receive<RegressaoLinear>()
-        val valorPetroleo = call.receive<Float>()
-        val valorDolar = call.receive<Float>()
+        val valorPetroleo = call.receive<Double>()
+        val valorDolar = call.receive<Double>()
         val precoPrevisto = bancoprecos.calculaPrevisao(modeloTreinado, valorPetroleo, valorDolar)
         call.respond(precoPrevisto)
     }

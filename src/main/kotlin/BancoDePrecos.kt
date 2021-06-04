@@ -115,17 +115,16 @@ class BancoDePrecos {
         return ranking
     }
 
-    fun getDadosTreinamento(siglaEstado: String, municipio: String, tipoCombustivel: String): List<Registro> {
-        var dados = DataFrame.readCSV("dadosConsolidados.csv")
+    fun getDadosTreinamento(siglaEstado: String, tipoCombustivel: String): List<Registro> {
+        var dados = DataFrame.readCSV("dados.csv")
         val registrosSelecionados = mutableListOf<Registro>()
         dados = dados.filter { it["CotacaoPetroleo"].isNotNA() }
-        dados = dados.filter { it["CotacaoPetroleo"].isNotNA() }
-        dados = dados.filter { it["Estado"].isEqualTo(siglaEstado) }
-        dados = dados.filter { it["Municipio"].isEqualTo(municipio) }
+        dados = dados.filter { it["CotacaoDolar"].isNotNA() }
+        dados = dados.filter { it["EstadoSigla"].isEqualTo(siglaEstado) }
         dados = dados.filter { it["Produto"].isEqualTo(tipoCombustivel) }
         for (i in 0 until dados.nrow) {
-            var registro = Registro(dados["CotacaoPetroleo"][i] as Float,dados["CotacaoDolar"][i] as Float,
-                dados["ValorVenda"][i] as Float)
+            var registro = Registro(dados["CotacaoPetroleo"][i] as Double, dados["CotacaoDolar"][i] as Double,
+                dados["ValorVenda"][i] as Double)
             registrosSelecionados.add(registro)
         }
         return registrosSelecionados
@@ -134,7 +133,7 @@ class BancoDePrecos {
     fun treinaModelo(dados: List<Registro>): RegressaoLinear {
         val modelo = RegressaoLinear()
         val dadosPadronizados = Escala().padronizar(dados)
-        val coeficientes = RegressaoLinear().otimizaCoeficientes(dadosPadronizados,2,0.01F,0.000000000001,30000)
+        val coeficientes = RegressaoLinear().otimizaCoeficientes(dadosPadronizados,3,0.01,0.000000000001,30000)
         modelo.slopePetro = coeficientes[0]
         modelo.slopeDolar = coeficientes[1]
         modelo.intercepto = coeficientes[2]
@@ -142,7 +141,8 @@ class BancoDePrecos {
         return modelo
     }
 
-    fun calculaPrevisao(modelo: RegressaoLinear, valorPetroleo: Float, valorDolar: Float): Float {
+    fun calculaPrevisao(modelo: RegressaoLinear, valorPetroleo: Double, valorDolar: Double): Double {
         return modelo.intercepto + (modelo.slopePetro*valorPetroleo) + (modelo.slopeDolar*valorDolar)
     }
 }
+

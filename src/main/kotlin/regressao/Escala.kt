@@ -2,18 +2,21 @@ package regressao
 import org.nield.kotlinstatistics.standardDeviation
 
 class Escala {
-    lateinit var mediasOriginais: FloatArray
-    lateinit var desviosOriginais: FloatArray
+    var mediaPetro: Double = 0.0
+    var desvioPetro: Double = 0.0
+    var mediaDolar: Double = 0.0
+    var desvioDolar: Double = 0.0
+
 
     fun padronizar(x: List<Registro>): List<Registro> {
-        mediasOriginais[0] = (x.map { reg -> reg.xPetro}.sum())/x.size
-        mediasOriginais[1] = (x.map { reg -> reg.xDolar}.sum())/x.size
-        desviosOriginais[0] = x.map { reg -> reg.xPetro}.standardDeviation().toFloat()
-        desviosOriginais[0] = x.map { reg -> reg.xDolar}.standardDeviation().toFloat()
+        mediaPetro = x.map { reg -> reg.xDolar}.average()
+        mediaDolar = x.map { reg -> reg.xDolar}.average()
+        desvioPetro = x.map { reg -> reg.xPetro}.standardDeviation()
+        desvioDolar = x.map { reg -> reg.xDolar}.standardDeviation()
         val xPadronizado = mutableListOf<Registro>()
         for (i in x.indices) {
-            val zscorePetro = (x[i].xPetro - mediasOriginais[0])/desviosOriginais[0]
-            val zscoreDolar = (x[i].xDolar - mediasOriginais[1])/desviosOriginais[1]
+            val zscorePetro = (x[i].xPetro - mediaPetro)/desvioPetro
+            val zscoreDolar = (x[i].xDolar - mediaDolar)/desvioDolar
             val registro = Registro(zscorePetro,zscoreDolar,x[i].yPreco)
             xPadronizado.add(registro)
         }
@@ -21,9 +24,9 @@ class Escala {
     }
 
     fun despadronizar(x: RegressaoLinear) {
-        x.slopePetro = (x.slopePetro*desviosOriginais[0]) + mediasOriginais[0]
-        x.slopeDolar = (x.slopeDolar*desviosOriginais[1]) + mediasOriginais[1]
-        x.intercepto = x.intercepto - (((mediasOriginais[0]/desviosOriginais[0])*x.slopePetro)+
-                ((mediasOriginais[1]/desviosOriginais[1])*x.slopeDolar))
+        x.slopePetro = (x.slopePetro*desvioPetro) + mediaPetro
+        x.slopeDolar = (x.slopeDolar*desvioDolar) + mediaDolar
+        x.intercepto = x.intercepto - (((mediaPetro/desvioPetro)*x.slopePetro)+
+                ((mediaDolar/desvioDolar)*x.slopeDolar))
     }
 }
