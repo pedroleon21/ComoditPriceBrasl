@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.iml" filepath="$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.main.iml" filepath="$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.test.iml" filepath="$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/comoditie.iml" filepath="$PROJECT_DIR$/.idea/comoditie.iml" />
     </modules>
   </component>

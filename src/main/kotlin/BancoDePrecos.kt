@@ -71,10 +71,6 @@ class BancoDePrecos {
         return cotacao
     }
 
-
-    fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Cotacao {
-        var consulta = Cotacao()
-
     fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Cotacoes {
         var consulta = Cotacoes()
 
@@ -117,7 +113,6 @@ class BancoDePrecos {
         ranking.municipio = municipio.toString()
 
         return ranking
-    }
 }
 
     fun consultaMenorPreco(data: String, tipo: String, UF: String): Minimo{
@@ -128,8 +123,8 @@ class BancoDePrecos {
         consulta.data = data
         consulta.tipoCombustivel = tipo
 
-        var menorPreco = precosCombustiveis.filter{it.data == data && it.UF == UF && it.tipo == tipo}?.minOf { it.valor }
-        var municipio = precosCombustiveis.filter{it.data == data && it.UF == UF && it.tipo == tipo}?.minByOrNull { it.valor }?.municipio
+        var menorPreco = precosCombustiveis.filter{it.data == data && it.local.uf == UF && it.tipo == tipo}?.minOf { it.valor }
+        var municipio = precosCombustiveis.filter{it.data == data && it.local.uf == UF && it.tipo == tipo}?.minByOrNull { it.valor }?.local?.municipio
 
         consulta.menorpreco = menorPreco
         consulta.municipio = municipio.toString()

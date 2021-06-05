@@ -130,7 +130,6 @@ fun Route.cadastraCotacaoPetroleo() {
 
 fun Route.consultaPrecos() {
     get("/precos") {
-        var consulta: Cotacao = call.receive<Cotacao>()
         var consulta: Cotacoes = call.receive<Cotacoes>()
         var consultaRealizada = bancoprecos.consultaPrecos(consulta.data,
             consulta.tipoCombustivel,
@@ -149,9 +148,6 @@ fun Route.consultaPrecoCombustiveis(){
 }
 fun Route.consultaPrecoEstado(){
     get("/precos/estado") {
-        var consulta: Minimo = call.receive<Minimo>()
-        var menorPreco = bancoprecos.consultaMenorPreco(consulta.data,
-            consulta.tipoCombustivel, consulta.UF)
         var rankingEstado: Extremos = call.receive<Extremos>()
         var menorPreco = bancoprecos.rankingPrecos(rankingEstado.data,
             rankingEstado.tipoCombustivel, rankingEstado.UF)
