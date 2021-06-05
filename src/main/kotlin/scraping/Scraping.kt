@@ -8,15 +8,15 @@ import org.openqa.selenium.chrome.ChromeOptions
 import org.openqa.selenium.support.ui.ExpectedConditions
 import org.openqa.selenium.support.ui.WebDriverWait
 
-class PetroleoScrapper {
+class Scraping {
 
-    fun getPrecoPetroleo(data: String): Float {
+    fun getValor(data: String, url: String): Float {
 
         val options = ChromeOptions()
         val driver = ChromeDriver(options.setHeadless(true))
         val wait = WebDriverWait(driver, 10)
 
-        driver.get("https://br.investing.com/commodities/brent-oil-historical-data")
+        driver.get(url)
 
         wait.until(ExpectedConditions.elementToBeClickable(By.id("onetrust-accept-btn-handler"))).click()
 
@@ -36,22 +36,23 @@ class PetroleoScrapper {
 
         driver.findElement(By.id("applyBtn")).click()
 
-        Thread.sleep(5000)
+        Thread.sleep(3000)
 
         val docHtml: String = driver.pageSource
 
         driver.quit()
 
         Jsoup.parse(docHtml).run {
-            val x = select("td.greenFont, td.redFont").select("td[data-real-value]")
-            var num: Float
 
-            return if (x.size == 1) {
-                num = x.text().replace(",", ".").toFloat()
-                num
+            val valor = select("td.greenFont, td.redFont").select("td[data-real-value]")
+
+            return if (valor.size == 1) {
+                valor.text().replace(",", ".").toFloat()
             } else {
                 0.0F
             }
         }
     }
+
+
 }

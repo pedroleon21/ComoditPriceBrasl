@@ -108,7 +108,7 @@ fun Route.cadastraPrecoCombustivel(localCad: Local) {
 fun Route.cadastraCotacaoDolar() {
     post("/commoditie/moeda"){
         val cotacaoDolar: Dolar = call.receive<Dolar>()
-        val cotacaoCadastrada = bancoprecos.cadastraCotacaoDolar(cotacaoDolar.data, cotacaoDolar.valor)
+        val cotacaoCadastrada = bancoprecos.cadastraCotacaoDolar(cotacaoDolar.data)
         call.respond(cotacaoCadastrada)
     }
 }

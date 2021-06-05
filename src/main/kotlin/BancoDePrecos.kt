@@ -4,9 +4,10 @@ import commoditie.materiaprima.Petroleo
 import consultaPrecos.cotacoes.Cotacoes
 import consultaPrecos.extremos.Extremos
 import commoditie.combustivel.local.Local
-import scraping.PetroleoScrapper
+import scraping.Scraping
 
 class BancoDePrecos {
+    private var scrapper = Scraping()
     var precosCombustiveis = mutableListOf<Combustivel>()
     var cotacoesDolar = mutableListOf<Dolar>()
     var cotacoesBarrilDePetroleo = mutableListOf<Petroleo>()
@@ -46,11 +47,11 @@ class BancoDePrecos {
         return combustivel
     }
 
-    fun cadastraCotacaoDolar(data: String, valor: Float): Dolar {
+    fun cadastraCotacaoDolar(data: String): Dolar {
         var cotacao = Dolar()
 
         cotacao.data = data
-        cotacao.valor = valor
+        cotacao.valor = scrapper.getValor(data, "https://br.investing.com/currencies/usd-brl-historical-data")
 
         cotacoesDolar.add(cotacao)
 
@@ -59,16 +60,9 @@ class BancoDePrecos {
 
     fun cadastraCotacaoPetroleo(data: String): Petroleo {
         var cotacao = Petroleo()
-        var scrap = PetroleoScrapper()
-        var valor: Float? = scrap.getPrecoPetroleo(data)
-
 
         cotacao.data = data
-        if (valor != null) {
-            cotacao.valor = valor
-        } else {
-            cotacao.valor = 0.0F
-        }
+        cotacao.valor = scrapper.getValor(data, "https://br.investing.com/commodities/brent-oil-historical-data")
 
         cotacoesBarrilDePetroleo.add(cotacao)
 
