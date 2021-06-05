@@ -9,4 +9,8 @@ class CombustivelConsulta {
         return scrapper.getListPrecos()
     }
 
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> Luciano
