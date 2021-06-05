@@ -1,15 +1,12 @@
 import commoditie.combustivel.Combustivel
 import commoditie.moeda.Dolar
 import commoditie.materiaprima.Petroleo
-<<<<<<< HEAD
 import preco.cotacao.Cotacao
 import preco.minimo.Minimo
-=======
 import consultaPrecos.cotacoes.Cotacoes
 import consultaPrecos.extremos.Extremos
 import commoditie.combustivel.local.Local
 import scraping.Scraping
->>>>>>> Luciano
 
 class BancoDePrecos {
     private var scrapper = Scraping()
@@ -74,13 +71,12 @@ class BancoDePrecos {
         return cotacao
     }
 
-<<<<<<< HEAD
+
     fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Cotacao {
         var consulta = Cotacao()
-=======
+
     fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Cotacoes {
         var consulta = Cotacoes()
->>>>>>> Luciano
 
         consulta.tipoCombustivel = tipoCombustivel
         consulta.data = data
@@ -105,8 +101,6 @@ class BancoDePrecos {
 
         return consulta
     }
-<<<<<<< HEAD
-=======
 
     fun rankingPrecos(data: String, tipo: String, UF: String): Extremos{
 
@@ -125,7 +119,6 @@ class BancoDePrecos {
         return ranking
     }
 }
->>>>>>> Luciano
 
     fun consultaMenorPreco(data: String, tipo: String, UF: String): Minimo{
 
