@@ -6,9 +6,7 @@
   </component>
 <<<<<<< HEAD
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="15" project-jdk-type="JavaSDK">
-=======
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="adopt-openjdk-1.8" project-jdk-type="JavaSDK">
->>>>>>> Luciano
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>
