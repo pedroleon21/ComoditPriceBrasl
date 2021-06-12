@@ -6,6 +6,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.main.iml" filepath="$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.test.iml" filepath="$PROJECT_DIR$/.idea/modules/PrecosCombustiveis.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/comoditie.iml" filepath="$PROJECT_DIR$/.idea/comoditie.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/trabalhopoo.PrecosCombustiveis.iml" filepath="$PROJECT_DIR$/.idea/modules/trabalhopoo.PrecosCombustiveis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/trabalhopoo.PrecosCombustiveis.main.iml" filepath="$PROJECT_DIR$/.idea/modules/trabalhopoo.PrecosCombustiveis.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/trabalhopoo.PrecosCombustiveis.test.iml" filepath="$PROJECT_DIR$/.idea/modules/trabalhopoo.PrecosCombustiveis.test.iml" />
     </modules>
   </component>
 </project>

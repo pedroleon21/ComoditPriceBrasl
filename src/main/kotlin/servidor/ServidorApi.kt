@@ -14,11 +14,14 @@ import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.html.*
+import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.html.*
 import org.slf4j.event.Level
+import usuario.Usuario
+import usuario.novoUsuario.NovoUsuario
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -49,6 +52,9 @@ fun Application.bancoprecos(testing: Boolean = false) {
         consultaPrecos()
         consultaPrecoCombustiveis()
         consultaPrecoEstado()
+        usuario()
+        login()
+
     }
 }
 
@@ -70,6 +76,9 @@ fun Route.meuindex() {
                     ol { +"POST - /commoditie/materiaprima      - Cadastra Cotação do Barril de Petróleo Brent" }
                     ol { +"GET  - /precos                       - Consultar Preços e Cotações"}
                     ol { +"GET  - /precos/estado                - Consultar Menor Preço por Estado"}
+                    ol { +"POST - /usuario                      - Cadastra um usuário"}
+                    ol { +"POST - /login                        - Efetua login com email e senha."}
+
                 }
             }
         }
@@ -154,3 +163,51 @@ fun Route.consultaPrecoEstado(){
         call.respond(menorPreco)
     }
 }
+fun Route.usuario() {
+    post("/usuario") {
+        var consumidor: Usuario = call.receive<Usuario>()
+
+        if (consumidor.email == null) {
+            call.respond(HttpStatusCode.BadRequest, "O Endereço de E-mail é Indispensável para o cadastro!")
+            return@post
+        }
+        if (consumidor.senha == null) {
+            call.respond(HttpStatusCode.BadRequest, "A Senha é Indispensável para o cadastro!")
+            return@post
+        }
+        if (consumidor.nome == null) {
+            call.respond(HttpStatusCode.BadRequest, "O Nome é Indispensável para o cadastro!")
+            return@post
+        }
+
+        //TODO - CHAMAR METODO CRIAR USUARIO
+        call.respond(HttpStatusCode.Created)
+    }
+}
+fun Route.login() {
+    post("/login") {
+        var consumidor: Usuario = call.receive<Usuario>()//Usuario ??
+
+        if (consumidor.email == null) {
+            call.respond(HttpStatusCode.BadRequest, "O E-mail é obrigatório para efetuar o Login!")
+            return@post
+        }
+        if (consumidor.senha == null) {
+            call.respond(HttpStatusCode.BadRequest, "A Senha é obrigatória para efetuar o Login!")
+            return@post
+        }
+
+        //var resultado = TODO CHAMAR METODO LOGIN
+
+        /*
+        if (!resultado) {
+            call.respond(HttpStatusCode.BadRequest, "Não foi possível efetuar login. Por favor verifique os dados.")
+            return@post
+        }
+         */
+
+        call.respond(HttpStatusCode.NoContent)
+    }
+}
+
+
