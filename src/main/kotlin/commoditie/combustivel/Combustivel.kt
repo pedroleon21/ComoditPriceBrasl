@@ -1,9 +1,9 @@
 package commoditie.combustivel
 
 import commoditie.Commoditie
-import commoditie.combustivel.local.Local
+import commoditie.combustivel.local.Revenda
 
 class Combustivel: Commoditie() {
     var tipo: String = ""
-    var local: Local = Local()
+    var local: Revenda = Revenda()
 }

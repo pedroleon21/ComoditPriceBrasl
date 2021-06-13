@@ -7,9 +7,8 @@ class Escala {
     var mediaDolar: Double = 0.0
     var desvioDolar: Double = 0.0
 
-
     fun padronizar(x: List<Registro>): List<Registro> {
-        mediaPetro = x.map { reg -> reg.xDolar}.average()
+        mediaPetro = x.map { reg -> reg.xPetro}.average()
         mediaDolar = x.map { reg -> reg.xDolar}.average()
         desvioPetro = x.map { reg -> reg.xPetro}.standardDeviation()
         desvioDolar = x.map { reg -> reg.xDolar}.standardDeviation()
@@ -23,10 +22,14 @@ class Escala {
         return xPadronizado
     }
 
-    fun despadronizar(x: RegressaoLinear) {
-        x.slopePetro = (x.slopePetro*desvioPetro) + mediaPetro
-        x.slopeDolar = (x.slopeDolar*desvioDolar) + mediaDolar
-        x.intercepto = x.intercepto - (((mediaPetro/desvioPetro)*x.slopePetro)+
-                ((mediaDolar/desvioDolar)*x.slopeDolar))
+    fun despadronizar(x: List<Registro>, modelo: RegressaoLinear) {
+        mediaPetro = x.map { reg -> reg.xPetro}.average()
+        mediaDolar = x.map { reg -> reg.xDolar}.average()
+        desvioPetro = x.map { reg -> reg.xPetro}.standardDeviation()
+        desvioDolar = x.map { reg -> reg.xDolar}.standardDeviation()
+        modelo.intercepto = modelo.intercepto - (((mediaPetro/desvioPetro)*modelo.slopePetro)+
+                ((mediaDolar/desvioDolar)*modelo.slopeDolar))
+        modelo.slopePetro = modelo.slopePetro/desvioPetro
+        modelo.slopeDolar = modelo.slopeDolar/desvioDolar
     }
 }

@@ -5,14 +5,16 @@ val kotlinVersion: String by project
 val logbackVersion: String by project
 val statisticsVersion: String by project
 val kranglVersion: String by project
+val seleniumJavaVersion: String by project
+val seleniumDriverVersion: String by project
 
 plugins {
     application
     kotlin("jvm") version "1.4.31"
 }
 
-group = "trabalhopoo"
-version = "0.0.1"
+group = "br.iesb.mobile.kotlin.precoscombustiveis"
+version = "1.0"
 
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
@@ -35,6 +37,9 @@ dependencies {
     implementation("io.ktor:ktor-html-builder:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
+    implementation("org.jsoup:jsoup:1.11.3")
+    implementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
+    implementation("org.seleniumhq.selenium:selenium-chrome-driver:$seleniumDriverVersion")
     implementation("org.nield:kotlin-statistics:$statisticsVersion")
     implementation("com.github.holgerbrandl:krangl:$kranglVersion")
 }

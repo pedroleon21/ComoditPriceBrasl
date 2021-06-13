@@ -3,6 +3,8 @@ package regressao
 import kotlin.random.Random
 
 class RegressaoLinear {
+    var estado: String = ""
+    var tipoCombustivel: String = ""
     var intercepto: Double = 0.0
     var slopeDolar: Double = 0.0
     var slopePetro: Double = 0.0

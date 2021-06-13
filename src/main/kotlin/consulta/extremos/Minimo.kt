@@ -1,7 +1,7 @@
 
-package consultaPrecos.extremos
+package consulta.extremos
 
-import consultaPrecos.Consulta
+import consulta.Consulta
 
 class Extremos: Consulta() {
     var menorpreco: Float = 0.0F

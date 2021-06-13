@@ -1,6 +1,6 @@
-package consultaPrecos.cotacoes
+package consulta.cotacoes
 
-import consultaPrecos.Consulta
+import consulta.Consulta
 
 class Cotacoes: Consulta() {
     var preco: Float = 0.0F

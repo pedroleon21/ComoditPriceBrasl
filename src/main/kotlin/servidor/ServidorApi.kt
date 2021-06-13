@@ -3,21 +3,24 @@ package servidor
 import BancoDePrecos
 import commoditie.combustivel.Combustivel
 import commoditie.materiaprima.Petroleo
-import commoditie.combustivel.local.Local
+import commoditie.combustivel.local.Revenda
 import commoditie.moeda.Dolar
-import consulta.CombustivelConsulta
-import consultaPrecos.cotacoes.Cotacoes
-import consultaPrecos.extremos.Extremos
+import consulta.cotacoes.Cotacoes
+import consulta.extremos.Extremos
 import io.ktor.application.*
 import io.ktor.features.*
 import io.ktor.gson.*
 import io.ktor.html.*
+import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import kotlinx.html.*
 import org.slf4j.event.Level
-import regressao.RegressaoLinear
+import previsao.Escopo
+import previsao.Previsao
+import usuario.Usuario
+import servidor.ServerError
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -41,12 +44,13 @@ fun Application.bancoprecos(testing: Boolean = false) {
 
     routing {
         meuindex()
-        var localCad: Local = cadastraLocalCombustivel()
+        usuario()
+        login()
+        var localCad: Revenda = cadastraLocalCombustivel()
         cadastraPrecoCombustivel(localCad)
         cadastraCotacaoDolar()
         cadastraCotacaoPetroleo()
         consultaPrecos()
-        consultaPrecoCombustiveis()
         consultaPrecoEstado()
         treinaModelo()
         calculaPrevisao()
@@ -60,6 +64,9 @@ fun Route.meuindex() {
                 h1 { +"Banco de Preços de Combustíveis e Cotações do Dólar e Barril do Petróleo" }
                 p { +"Obtenha informações de preços de combustíveis por município acompanhados das cotações do Dólar e do Barril de Petróleo Brent na data desejada" }
                 ul {
+                    ol { +"POST - /usuario                      - Cadastra um usuário"}
+                    ol { +"GET  - /usuario/ativo                - Consulta usuário ativo"}
+                    ol { +"POST - /login                        - Efetua login com email e senha"}
                     ol { +"POST - /commoditie/combustivel/local - Cadastra Local do Combustivel"}
                     ol { +"POST - /commoditie/combustivel       - Cadastra Preço de Combustível" }
                     ol { +"POST - /commoditie/moeda             - Cadastra Cotação do Dólar" }
@@ -74,32 +81,94 @@ fun Route.meuindex() {
     }
 }
 
-fun Route.cadastraLocalCombustivel(): Local {
-    var novoLoc: Local = Local()
+fun Route.usuario() {
+    get("/usuario/ativo") {
+        val usuario = bancoprecos.usuarioAtivo
+        if (usuario == null) {
+            val erro = servidor.ServerError(HttpStatusCode.NotFound.value, "Usuário não encontrado. Efetue login para utilizar as funcionalidades da API.")
+            call.respond(HttpStatusCode.NotFound, erro)
+        } else {
+            call.respond(HttpStatusCode.OK, usuario)
+        }
+    }
+
+    post("/usuario") {
+        var novo: Usuario = call.receive<Usuario>()
+
+        if (novo.email == null) {
+            call.respond(HttpStatusCode.BadRequest, "O Endereço de E-mail é indispensável para o cadastro!")
+            return@post
+        }
+        if (novo.senha == null) {
+            call.respond(HttpStatusCode.BadRequest, "A Senha é indispensável para o cadastro!")
+            return@post
+        }
+        if (novo.nome == null) {
+            call.respond(HttpStatusCode.BadRequest, "O Nome é indispensável para o cadastro!")
+            return@post
+        }
+
+        bancoprecos.criaUsuario(novo.nome!!, novo.email!!, novo.senha!!)
+        call.respond(HttpStatusCode.Created)
+    }
+}
+
+fun Route.login() {
+    post("/login") {
+        var usuario: Usuario = call.receive<Usuario>()
+
+        if (usuario.email == null) {
+            call.respond(HttpStatusCode.BadRequest, "O E-mail é obrigatório para efetuar o Login!")
+            return@post
+        }
+        if (usuario.senha == null) {
+            call.respond(HttpStatusCode.BadRequest, "A Senha é obrigatória para efetuar o Login!")
+            return@post
+        }
+
+        val resultado = bancoprecos.login(usuario.email!!, usuario.senha!!)
+        if (!resultado) {
+            val erro = servidor.ServerError(HttpStatusCode.BadRequest.value, "Não foi possível efetuar login. Por favor verifique os dados.")
+            call.respond(HttpStatusCode.BadRequest, erro)
+            return@post
+        }
+
+        call.respond(HttpStatusCode.NoContent)
+    }
+}
+
+fun Route.cadastraLocalCombustivel(): Revenda {
+    var novoLoc: Revenda = Revenda()
     post("/commoditie/combustivel/local"){
-        val localCombustivel: Local = call.receive<Local>()
+        val localCombustivel: Revenda = call.receive<Revenda>()
         val localCadastrado = bancoprecos.cadastraLocalCombustivel(
-            localCombustivel.municipio,
             localCombustivel.regiao,
-            localCombustivel.uf,
-            localCombustivel.qtdPostos
+            localCombustivel.siglaEstado,
+            localCombustivel.municipio,
+            localCombustivel.nome,
+            localCombustivel.cnpj,
+            localCombustivel.bandeira
         )
-        novoLoc.municipio = localCadastrado.municipio
         novoLoc.regiao = localCadastrado.regiao
-        novoLoc.uf = localCadastrado.uf
-        novoLoc.qtdPostos = localCadastrado.qtdPostos
+        novoLoc.siglaEstado = localCadastrado.siglaEstado
+        novoLoc.municipio = localCadastrado.municipio
+        novoLoc.nome = localCadastrado.nome
+        novoLoc.cnpj = localCadastrado.cnpj
+        novoLoc.bandeira = localCadastrado.bandeira
         call.respond(localCadastrado)
     }
     return novoLoc
 }
 
-fun Route.cadastraPrecoCombustivel(localCad: Local) {
+fun Route.cadastraPrecoCombustivel(localCad: Revenda) {
     post("/commoditie/combustivel"){
         val precoCombustivel: Combustivel = call.receive<Combustivel>()
-        precoCombustivel.local!!.municipio = localCad.municipio
-        precoCombustivel.local!!.regiao = localCad.regiao
-        precoCombustivel.local!!.uf = localCad.uf
-        precoCombustivel.local!!.qtdPostos = localCad.qtdPostos
+        precoCombustivel.local.regiao = localCad.regiao
+        precoCombustivel.local.siglaEstado = localCad.siglaEstado
+        precoCombustivel.local.municipio = localCad.municipio
+        precoCombustivel.local.nome = localCad.nome
+        precoCombustivel.local.cnpj = localCad.cnpj
+        precoCombustivel.local.bandeira = localCad.bandeira
         val precoCadastrado = bancoprecos.cadastraPrecoCombustivel(
             precoCombustivel.tipo,
             precoCombustivel.data,
@@ -113,16 +182,15 @@ fun Route.cadastraPrecoCombustivel(localCad: Local) {
 fun Route.cadastraCotacaoDolar() {
     post("/commoditie/moeda"){
         val cotacaoDolar: Dolar = call.receive<Dolar>()
-        val cotacaoCadastrada = bancoprecos.cadastraCotacaoDolar(cotacaoDolar.data, cotacaoDolar.valor)
-        call.respond(cotacaoDolar)
+        val cotacaoCadastrada = bancoprecos.cadastraCotacaoDolar(cotacaoDolar.data)
+        call.respond(cotacaoCadastrada)
     }
 }
 
 fun Route.cadastraCotacaoPetroleo() {
     post("/commoditie/materiaprima") {
         val cotacaoPetroleo: Petroleo = call.receive<Petroleo>()
-        val cotacaoCadastrada = bancoprecos.cadastraCotacaoPetroleo(cotacaoPetroleo.data,
-            cotacaoPetroleo.valor)
+        val cotacaoCadastrada = bancoprecos.cadastraCotacaoPetroleo(cotacaoPetroleo.data)
         call.respond(cotacaoCadastrada)
     }
 }
@@ -138,14 +206,6 @@ fun Route.consultaPrecos() {
     }
 }
 
-fun Route.consultaPrecoCombustiveis(){
-    get("/preco/combustiveis"){
-        var consulta = CombustivelConsulta()
-        var listaCombutiveis = consulta.getAllPrecos()
-        call.respond(listaCombutiveis)
-    }
-}
-
 fun Route.consultaPrecoEstado(){
     get("/precos/estado") {
         var rankingEstado: Extremos = call.receive<Extremos>()
@@ -157,20 +217,19 @@ fun Route.consultaPrecoEstado(){
 
 fun Route.treinaModelo() {
     get("/precos/modelo"){
-        val siglaEstado = call.receive<String>()
-        val tipoCombustivel = call.receive<String>()
-        val registros = bancoprecos.getDadosTreinamento(siglaEstado,tipoCombustivel)
-        val modeloTreinado = bancoprecos.treinaModelo(registros)
+        val escopoDesejado = call.receive<Escopo>()
+        val registros = bancoprecos.getDadosTreinamento(escopoDesejado.siglaEstado, escopoDesejado.tipoCombustivel)
+        val modeloTreinado = bancoprecos.treinaModelo(escopoDesejado.siglaEstado, escopoDesejado.tipoCombustivel, registros)
         call.respond(modeloTreinado)
     }
 }
 
 fun Route.calculaPrevisao() {
     get("/precos/modelo/previsao"){
-        val modeloTreinado = call.receive<RegressaoLinear>()
-        val valorPetroleo = call.receive<Double>()
-        val valorDolar = call.receive<Double>()
-        val precoPrevisto = bancoprecos.calculaPrevisao(modeloTreinado, valorPetroleo, valorDolar)
+        val previsaoDesejada = call.receive<Previsao>()
+        val precoPrevisto = bancoprecos.calculaPrevisao(
+            previsaoDesejada.siglaEstado, previsaoDesejada.tipoCombustivel,
+            previsaoDesejada.valorPetroleo, previsaoDesejada.valorDolar)
         call.respond(precoPrevisto)
     }
 }
