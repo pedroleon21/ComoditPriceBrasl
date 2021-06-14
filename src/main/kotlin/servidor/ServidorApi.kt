@@ -84,7 +84,9 @@ fun Route.usuario() {
     get("/usuario/ativo") {
         val usuario = bancoprecos.usuarioAtivo
         if (usuario == null) {
-            val erro = ServerError(HttpStatusCode.NotFound.value, "Usuário não encontrado. Efetue login para utilizar as funcionalidades da API.")
+            val erro = ServerError(
+                HttpStatusCode.NotFound.value,
+                "Usuário não encontrado. Efetue login para utilizar as funcionalidades da API.")
             call.respond(HttpStatusCode.NotFound, erro)
         } else {
             call.respond(HttpStatusCode.OK, usuario)
