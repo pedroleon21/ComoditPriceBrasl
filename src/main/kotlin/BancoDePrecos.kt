@@ -1,9 +1,9 @@
 import commoditie.combustivel.Combustivel
 import commoditie.moeda.Dolar
 import commoditie.materiaprima.Petroleo
-import consulta.cotacoes.Cotacoes
-import consulta.extremos.Extremos
 import commoditie.combustivel.local.Revenda
+import consulta.media.MediaEstado
+import consulta.minimo.Minimo
 import scraping.Scraping
 import krangl.*
 import regressao.Escala
@@ -39,7 +39,7 @@ class BancoDePrecos {
                                  cnpj: String,
                                  bandeira: String): Revenda {
 
-        var local = Revenda()
+        val local = Revenda()
 
         local.regiao = regiao
         local.siglaEstado = siglaEstado
@@ -56,7 +56,7 @@ class BancoDePrecos {
                                  valor: Float,
                                  local: Revenda): Combustivel {
 
-        var combustivel = Combustivel()
+        val combustivel = Combustivel()
 
         combustivel.tipo = tipo
         combustivel.data = data
@@ -74,7 +74,7 @@ class BancoDePrecos {
     }
 
     fun cadastraCotacaoDolar(data: String): Dolar {
-        var cotacao = Dolar()
+        val cotacao = Dolar()
 
         cotacao.data = data
         cotacao.valor = scrapper.getValor(data, "https://br.investing.com/currencies/usd-brl-historical-data")
@@ -85,7 +85,7 @@ class BancoDePrecos {
     }
 
     fun cadastraCotacaoPetroleo(data: String): Petroleo {
-        var cotacao = Petroleo()
+        val cotacao = Petroleo()
 
         cotacao.data = data
         cotacao.valor = scrapper.getValor(data, "https://br.investing.com/commodities/brent-oil-historical-data")
@@ -95,55 +95,89 @@ class BancoDePrecos {
         return cotacao
     }
 
-    fun consultaPrecos(data: String, tipoCombustivel: String, municipio: String, UF: String): Cotacoes {
-        var consulta = Cotacoes()
+    @OptIn(ExperimentalStdlibApi::class)
+    fun consultaMediaEstado(tipoCombustivel: String, data: String, siglaEstado: String): MediaEstado {
+        val consulta = MediaEstado()
 
         consulta.tipoCombustivel = tipoCombustivel
         consulta.data = data
-        consulta.municipio = municipio
-        consulta.UF = UF
+        consulta.UF = siglaEstado
 
-        var precoCombustivel = precosCombustiveis.filter { Combustivel ->
-            Combustivel.tipo == tipoCombustivel && Combustivel.data == data && Combustivel.local!!.municipio == municipio && Combustivel.local!!.siglaEstado == UF
-        }.first()
+        lateinit var dados: DataFrame
 
-        var cotacaoDolar = cotacoesDolar.filter { Dolar ->
-            Dolar.data == data
-        }.first()
-
-        var cotacaoPetroleo = cotacoesBarrilDePetroleo.filter { Petroleo ->
-            Petroleo.data == data
-        }.first()
-
-        consulta.preco = precoCombustivel.valor!!
-        consulta.cotacaoDolar = cotacaoDolar.valor!!
-        consulta.cotacaoPetroleo = cotacaoPetroleo.valor!!
+        if (tipoCombustivel.uppercase() == "DIESEL") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosDiesel.csv")
+        } else if (tipoCombustivel.uppercase() == "DIESEL S10") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosDieselS10.csv")
+        } else if (tipoCombustivel.uppercase() == "GASOLINA") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaComum.csv")
+        } else if (tipoCombustivel.uppercase() == "GASOLINA ADITIVADA") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaAditivada.csv")
+        } else if (tipoCombustivel.uppercase() == "ETANOL") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosEtanol.csv")
+        }
+        dados = dados.filter { it["EstadoSigla"].isEqualTo(siglaEstado) }
+        val menor = dados.summarize("menorPreco" to { it["ValorVenda"].min() })
+        consulta.menorPreco = menor["menorPreco"][0] as Double
+        val maior = dados.summarize("maiorPreco" to { it["ValorVenda"].max() })
+        consulta.maiorPreco = maior["maiorPreco"][0] as Double
+        val media = dados.summarize("media" to { it["ValorVenda"].mean() })
+        consulta.media = media["media"][0] as Double
 
         return consulta
     }
 
-    fun rankingPrecos(data: String, tipo: String, UF: String): Extremos{
+    @OptIn(ExperimentalStdlibApi::class)
+    fun consultaMenorPreco(tipoCombustivel: String, data: String, municipio: String, siglaEstado: String): Minimo {
+        val melhorPreco = Minimo()
 
-        var ranking = Extremos()
+        melhorPreco.UF = siglaEstado
+        melhorPreco.municipio = municipio
+        melhorPreco.data = data
+        melhorPreco.tipoCombustivel = tipoCombustivel
 
-        ranking.UF = UF
-        ranking.data = data
-        ranking.tipoCombustivel = tipo
+        lateinit var dados: DataFrame
 
-        var menorPreco = precosCombustiveis.filter { it.data == data && it.local.siglaEstado == UF && it.tipo == tipo }.minOf { it.valor }
-        var municipio = precosCombustiveis.filter { it.data == data && it.local.siglaEstado == UF && it.tipo == tipo }.minByOrNull { it?.valor }!!.local.municipio
+        if (tipoCombustivel.uppercase() == "DIESEL") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosDiesel.csv")
+        } else if (tipoCombustivel.uppercase() == "DIESEL S10") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosDieselS10.csv")
+        } else if (tipoCombustivel.uppercase() == "GASOLINA") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaComum.csv")
+        } else if (tipoCombustivel.uppercase() == "GASOLINA ADITIVADA") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaAditivada.csv")
+        } else if (tipoCombustivel.uppercase() == "ETANOL") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosEtanol.csv")
+        }
+        dados = dados.filter { it["EstadoSigla"].isEqualTo(siglaEstado) }
+        dados = dados.filter { it["Municipio"].isEqualTo(municipio) }
+        dados = dados.filter { it["DataColeta"].isEqualTo(data) }
+        var menor = dados.summarize("menorPreco" to { it["ValorVenda"].min() })
+        melhorPreco.menorpreco = menor["menorPreco"][0] as Double
+        menor = dados.filter { it["ValorVenda"] isEqualTo (melhorPreco.menorpreco) }
+        melhorPreco.nomeRevenda = menor["Revenda"][0] as String
+        melhorPreco.cnpjRevenda = menor["CNPJRevenda"][0] as String
+        melhorPreco.bandeiraRevenda = menor["Bandeira"][0] as String
 
-        ranking.menorpreco = menorPreco
-        ranking.municipio = municipio.toString()
-
-        return ranking
+        return melhorPreco
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     fun getDadosTreinamento(siglaEstado: String, tipoCombustivel: String): List<Registro> {
-        var dados = DataFrame.readCSV("dados202104ge3.csv")
+        lateinit var dados: DataFrame
+        if (tipoCombustivel.uppercase() == "DIESEL") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosDiesel.csv")
+        } else if (tipoCombustivel.uppercase() == "DIESEL S10") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosDieselS10.csv")
+        } else if (tipoCombustivel.uppercase() == "GASOLINA") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaComum.csv")
+        } else if (tipoCombustivel.uppercase() == "GASOLINA ADITIVADA") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaAditivada.csv")
+        } else if (tipoCombustivel.uppercase() == "ETANOL") {
+            dados = DataFrame.readCSV("dadosHistoricos/dadosEtanol.csv")
+        }
         val registrosSelecionados = mutableListOf<Registro>()
         dados = dados.filter { it["EstadoSigla"].isEqualTo(siglaEstado) }
-        dados = dados.filter { it["Produto"].isEqualTo(tipoCombustivel) }
         for (i in 0 until dados.nrow) {
             val registro = Registro(dados["CotacaoPetroleo"][i] as Double, dados["CotacaoDolar"][i] as Double,
                 dados["ValorVenda"][i] as Double)
