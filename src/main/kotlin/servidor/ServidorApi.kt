@@ -2,9 +2,7 @@ package servidor
 
 import BancoDePrecos
 import commoditie.combustivel.Combustivel
-import commoditie.materiaprima.Petroleo
 import commoditie.combustivel.local.Revenda
-import commoditie.moeda.Dolar
 import consulta.Consulta
 import consulta.minimo.ConsultaMinimo
 import io.ktor.application.*
@@ -47,8 +45,6 @@ fun Application.bancoprecos(testing: Boolean = false) {
         login()
         var localCad: Revenda = cadastraLocalCombustivel()
         cadastraPrecoCombustivel(localCad)
-        cadastraCotacaoDolar()
-        cadastraCotacaoPetroleo()
         consultaMediaEstado()
         consultaMenorPreco()
         treinaModelo()
@@ -60,16 +56,14 @@ fun Route.meuindex() {
     get("/") {
         call.respondHtml {
             body {
-                h1 { +"Banco de Preços de Combustíveis e Cotações do Dólar e Barril do Petróleo" }
-                p { +"Obtenha informações de preços de combustíveis por município acompanhados das cotações do Dólar e do Barril de Petróleo Brent na data desejada" }
+                h1 { +"Banco de Preços de Combustíveis" }
+                p { +"Obtenha informações de preços de combustíveis por localidade, além de previsões com base nas cotações do Dólar e do Barril de Petróleo Brent" }
                 ul {
                     ol { +"POST - /usuario                      - Cadastra um usuário"}
                     ol { +"GET  - /usuario/ativo                - Consulta usuário ativo"}
                     ol { +"POST - /login                        - Efetua login com email e senha"}
                     ol { +"POST - /commoditie/combustivel/local - Cadastra Local do Combustivel"}
                     ol { +"POST - /commoditie/combustivel       - Cadastra Preço de Combustível" }
-                    ol { +"POST - /commoditie/moeda             - Cadastra Cotação do Dólar" }
-                    ol { +"POST - /commoditie/materiaprima      - Cadastra Cotação do Barril de Petróleo Brent" }
                     ol { +"GET  - /precos/media                 - Consulta Preço Médio por Estado"}
                     ol { +"GET  - /precos/estado                - Consulta Menor Preço no Muncípio"}
                     ol { +"GET  - /precos/modelo                - Treinar Modelo de Regressão"}
@@ -175,22 +169,6 @@ fun Route.cadastraPrecoCombustivel(localCad: Revenda) {
             precoCombustivel.local
         )
         call.respond(precoCadastrado)
-    }
-}
-
-fun Route.cadastraCotacaoDolar() {
-    post("/commoditie/moeda"){
-        val cotacaoDolar: Dolar = call.receive<Dolar>()
-        val cotacaoCadastrada = bancoprecos.cadastraCotacaoDolar(cotacaoDolar.data)
-        call.respond(cotacaoCadastrada)
-    }
-}
-
-fun Route.cadastraCotacaoPetroleo() {
-    post("/commoditie/materiaprima") {
-        val cotacaoPetroleo: Petroleo = call.receive<Petroleo>()
-        val cotacaoCadastrada = bancoprecos.cadastraCotacaoPetroleo(cotacaoPetroleo.data)
-        call.respond(cotacaoCadastrada)
     }
 }
 
