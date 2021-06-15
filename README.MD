@@ -21,7 +21,7 @@ dólar e do petróleo brent.
 A partir da porta 9999 do *localhost* estão disponíveis 
 os seguintes *endpoints*:
 
-* *POST - /usuario - Cadastrar um usuário* 
+* **POST - /usuario - Cadastrar um usuário** 
   
   Permite a criação de perfil de usuário para acessar as funcionalidades
   da API. Deve ser enviado um objeto do formato *JSON*, conforme exemplificado
@@ -33,12 +33,12 @@ os seguintes *endpoints*:
             senha: "senha"
         }
   
-* GET  - /usuario/ativo - Consultar usuário ativo
+* **GET  - /usuario/ativo - Consultar usuário ativo**
   
   Retorna as informações do usuário ativo se houver. Não é necessário enviar 
   nenhuma informação.
   
-* POST - /login - Efetuar login com email e senha
+* **POST - /login - Efetuar login com email e senha**
   
   Permite efetuar a autenticação do usuário para acesso às funcionalidades da
   API. Devem ser informados o e-mail e a senha cadastradas em um objeto do 
@@ -49,7 +49,7 @@ os seguintes *endpoints*:
             senha: "senha"
         }
   
-* POST - /commoditie/combustivel/local - Cadastrar Local do Combustivel
+* **POST - /commoditie/combustivel/local - Cadastrar Local do Combustivel**
   
   Permite cadastrar os dados de uma revenda de combustíveis. Devem ser
   informados os dados exemplificados abaixo em um objeto do formato *JSON*:
@@ -63,7 +63,7 @@ os seguintes *endpoints*:
             bandeira: "BRANCA"
         }
   
-* POST - /commoditie/combustivel - Cadastrar Preço de Combustível
+* **POST - /commoditie/combustivel - Cadastrar Preço de Combustível**
   
   Permite cadastrar um registro de preço de combustível, informando-se os
   dados exemplificados abaixo, em um objeto do formato *JSON*:
@@ -86,7 +86,7 @@ os seguintes *endpoints*:
   objeto cadastrado no endpoint anterior.
   Os dados são gravados em um arquivo CSV.
   
-* GET  - /precos/media - Consultar Preço Médio por Estado
+* **GET  - /precos/media - Consultar Preço Médio por Estado**
   
   Permite consultar o preço médio do tipo de combustível desejado, no
   estado e data informados. A requisição da consulta deve ser enviada
@@ -105,7 +105,7 @@ os seguintes *endpoints*:
   na pasta "dadosHistoricos" do projeto, contemplando informações de 01/01/2020 a 
   31/05/2021.
   
-* GET  - /precos/menor - Consultar Menor Preço no Muncípio
+* **GET  - /precos/menor - Consultar Menor Preço no Muncípio**
 
   Permite consultar o menor preço disponível do tipo de combustível desejado, no
   município e data informados. A requisição da consulta deve ser enviada
@@ -123,7 +123,7 @@ os seguintes *endpoints*:
   o valor, o nome, CNPJ e bandeira da revenda ofertante. Caso não hajam 
   dados disponíveis, nada será retornado.
   
-* GET  - /precos/modelo - Treinar Modelo de Regressão
+* **GET  - /precos/modelo - Treinar Modelo de Regressão**
   
   Permite calcular uma função de regressão linear que estima a relação das
   cotações do Dólar Americano e do Barril de Petróleo Brent na formação do 
@@ -140,7 +140,7 @@ os seguintes *endpoints*:
   Caso não hajam dados disponíveis para os parâmetros informados,
   nada será retornado.
   
-* GET  - /precos/modelo/previsao - Calcular Previsão do Preço do Combustível
+* **GET  - /precos/modelo/previsao - Calcular Previsão do Preço do Combustível**
 
   A partir da função de regressão calculada no endpoint anterior, possibilita
   o cálculo de previsões do preço de combustível solicitado, com base em valores 
@@ -155,7 +155,7 @@ os seguintes *endpoints*:
         }
 
   São permitidos apenas os tipos de combustíveis citados anteriormente.
-  É retornado o preço previsto no formato **Double**.
+  É retornado o preço previsto no formato *Double*.
   
 ## Integrantes do Projeto
 
@@ -187,7 +187,7 @@ Outras bibliotecas utilizadas:
 * Kotlin-Statistics - Versão 1.2.1
 * Krangl - Versão 0.16.2
 
-Para execução da função de **web scraping** que busca as cotações do Dólar 
+Para execução da função de *web scraping* que busca as cotações do Dólar 
 e do Petróleo Brent, é necessário dispor do arquivo **chromedriver** 
 compatível com a versão do sistema operacional utilizado. Na pasta 
 raiz do projeto, estão disponíveis as versões para Linux e Windows.
@@ -196,6 +196,6 @@ raiz do projeto, estão disponíveis as versões para Linux e Windows.
 
 Foram utilizadas as seguintes fontes de dados:
 
-* **Combustíveis**: https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis
-* **Dólar**: https://br.investing.com/currencies/usd-brl-historical-data
-* **Petróleo**: https://br.investing.com/commodities/brent-oil-historical-data
+* *Combustíveis*: https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis
+* *Dólar*: https://br.investing.com/currencies/usd-brl-historical-data
+* *Petróleo*: https://br.investing.com/commodities/brent-oil-historical-data
