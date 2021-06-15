@@ -75,11 +75,11 @@ class BancoDePrecos {
                 combustivel.valor, cotacaoPetroleo, cotacaoDolar))
             dados.writeCSV(File("dadosHistoricos/dadosDieselS10.csv"))
         } else if (combustivel.tipo.uppercase() == "GASOLINA") {
-            dados = DataFrame.readCSV("/home/bruno/Downloads/DadosHistoricos/dados202101ge.csv")
+            dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaComum.csv")
             dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
                 combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
                 combustivel.valor, cotacaoPetroleo, cotacaoDolar))
-            dados.writeCSV(File("/home/bruno/Downloads/DadosHistoricos/dados202101ge.csv"))
+            dados.writeCSV(File("dadosHistoricos/dadosGasolinaComum.csv"))
         } else if (combustivel.tipo.uppercase() == "GASOLINA ADITIVADA") {
             dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaAditivada.csv")
             dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
@@ -135,6 +135,7 @@ class BancoDePrecos {
             dados = DataFrame.readCSV("dadosHistoricos/dadosEtanol.csv")
         }
         dados = dados.filter { it["EstadoSigla"].isEqualTo(siglaEstado) }
+        dados = dados.filter {it["DataColeta"].isEqualTo(data)}
         val menor = dados.summarize("menorPreco" to { it["ValorVenda"].min() })
         consulta.menorPreco = menor["menorPreco"][0] as Double
         val maior = dados.summarize("maiorPreco" to { it["ValorVenda"].max() })
