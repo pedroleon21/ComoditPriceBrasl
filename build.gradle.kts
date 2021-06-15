@@ -7,6 +7,7 @@ val statisticsVersion: String by project
 val kranglVersion: String by project
 val seleniumJavaVersion: String by project
 val seleniumDriverVersion: String by project
+val jsoupVersion: String by project
 
 plugins {
     application
@@ -37,7 +38,7 @@ dependencies {
     implementation("io.ktor:ktor-html-builder:$ktorVersion")
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
     testImplementation("io.ktor:ktor-server-tests:$ktorVersion")
-    implementation("org.jsoup:jsoup:1.11.3")
+    implementation("org.jsoup:jsoup:$jsoupVersion")
     implementation("org.seleniumhq.selenium:selenium-java:$seleniumJavaVersion")
     implementation("org.seleniumhq.selenium:selenium-chrome-driver:$seleniumDriverVersion")
     implementation("org.nield:kotlin-statistics:$statisticsVersion")

@@ -10,7 +10,7 @@ import org.openqa.selenium.support.ui.WebDriverWait
 
 class Scraping {
 
-    fun getValor(data: String, url: String): Float {
+    fun getValor(data: String, url: String): Double {
 
         val options = ChromeOptions()
         val driver = ChromeDriver(options.setHeadless(true))
@@ -47,9 +47,9 @@ class Scraping {
             val valor = select("td.greenFont, td.redFont").select("td[data-real-value]")
 
             return if (valor.size == 1) {
-                valor.text().replace(",", ".").toFloat()
+                valor.text().replace(",", ".").toDouble()
             } else {
-                0.0F
+                0.0
             }
         }
     }
