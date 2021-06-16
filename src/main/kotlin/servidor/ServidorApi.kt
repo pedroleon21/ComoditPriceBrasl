@@ -140,7 +140,7 @@ fun Route.cadastraLocalCombustivel(): Revenda {
                 "Você não está logado. Efetue login para utilizar as funcionalidades da API.")
             call.respond(HttpStatusCode.NotFound, erro)
         } else {
-            val localCombustivel: Revenda = call.receive<Revenda>()
+            val localCombustivel: Revenda = call.receive()
             val localCadastrado = bancoprecos.cadastraLocalCombustivel(
                 localCombustivel.regiao,
                 localCombustivel.siglaEstado,
@@ -170,7 +170,7 @@ fun Route.cadastraPrecoCombustivel(localCad: Revenda) {
                 "Você não está logado. Efetue login para utilizar as funcionalidades da API.")
             call.respond(HttpStatusCode.NotFound, erro)
         } else {
-            val precoCombustivel: Combustivel = call.receive<Combustivel>()
+            val precoCombustivel: Combustivel = call.receive()
             precoCombustivel.local.regiao = localCad.regiao
             precoCombustivel.local.siglaEstado = localCad.siglaEstado
             precoCombustivel.local.municipio = localCad.municipio

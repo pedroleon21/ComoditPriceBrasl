@@ -13,7 +13,7 @@ class Scraping {
     fun getValor(data: String, url: String): Double {
 
         val options = ChromeOptions()
-        val driver = ChromeDriver(options.setHeadless(true))
+        val driver = ChromeDriver(options.setHeadless(false))
         val wait = WebDriverWait(driver, 10)
 
         driver.get(url)

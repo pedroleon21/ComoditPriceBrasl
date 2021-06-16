@@ -67,31 +67,31 @@ class BancoDePrecos {
             dados = DataFrame.readCSV("dadosHistoricos/dadosDiesel.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
                 combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
+                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
             dados.writeCSV(File("dadosHistoricos/dadosDiesel.csv"))
         } else if (combustivel.tipo.uppercase() == "DIESEL S10") {
             dados = DataFrame.readCSV("dadosHistoricos/dadosDieselS10.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
                 combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
+                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
             dados.writeCSV(File("dadosHistoricos/dadosDieselS10.csv"))
         } else if (combustivel.tipo.uppercase() == "GASOLINA") {
             dados = DataFrame.readCSV("/home/bruno/Downloads/DadosHistoricos/dados202101ge.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
                 combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
+                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
             dados.writeCSV(File("/home/bruno/Downloads/DadosHistoricos/dados202101ge.csv"))
         } else if (combustivel.tipo.uppercase() == "GASOLINA ADITIVADA") {
             dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaAditivada.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
                 combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
+                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
             dados.writeCSV(File("dadosHistoricos/GasolinaAditivada.csv"))
         } else if (combustivel.tipo.uppercase() == "ETANOL") {
             dados = DataFrame.readCSV("dadosHistoricos/dadosEtanol.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
                 combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
+                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
             dados.writeCSV(File("dadosHistoricos/dadosEtanol.csv"))
         }
         return combustivel

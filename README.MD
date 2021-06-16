@@ -196,6 +196,6 @@ raiz do projeto, estão disponíveis as versões para Linux e Windows.
 
 Foram utilizadas as seguintes fontes de dados:
 
-* *Combustíveis*: https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis
-* *Dólar*: https://br.investing.com/currencies/usd-brl-historical-data
-* *Petróleo*: https://br.investing.com/commodities/brent-oil-historical-data
+* **Combustíveis**: https://www.gov.br/anp/pt-br/centrais-de-conteudo/dados-abertos/serie-historica-de-precos-de-combustiveis
+* **Dólar**: https://br.investing.com/currencies/usd-brl-historical-data
+* **Petróleo**: https://br.investing.com/commodities/brent-oil-historical-data
