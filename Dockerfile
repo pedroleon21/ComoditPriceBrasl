@@ -1,5 +1,5 @@
 FROM java:8-jdk-alpine
-COPY ./build/libs/precoscombustiveis-1.0.jar /usr/app/
+COPY ./out/artifacts/PrecosCombustiveis_jar/PrecosCombustiveis.jar /usr/app/
 WORKDIR /usr/app
 EXPOSE 8888 8080 8081 8082 8083
-ENTRYPOINT ["java", "-jar", "precoscombustiveis-1.0.jar"]
+ENTRYPOINT ["java", "-jar", "PrecosCombustiveis.jar"]
