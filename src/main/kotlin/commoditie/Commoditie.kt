@@ -2,5 +2,5 @@ package commoditie
 
 abstract class Commoditie {
     var data: String = ""
-    var valor: Double = 0.0
+    var valor: Float = 0.0F
 }

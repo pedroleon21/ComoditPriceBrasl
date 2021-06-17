@@ -45,7 +45,7 @@ class BancoDePrecos {
     }
 
     @OptIn(ExperimentalStdlibApi::class)
-    fun cadastraPrecoCombustivel(tipo: String, data: String, valor: Double, local: Revenda): Combustivel {
+    fun cadastraPrecoCombustivel(tipo: String, data: String, valor: Float, local: Revenda): Combustivel {
         val combustivel = Combustivel()
 
         combustivel.tipo = tipo
@@ -66,34 +66,33 @@ class BancoDePrecos {
         if (combustivel.tipo.uppercase() == "DIESEL") {
             dados = DataFrame.readCSV("dadosHistoricos/dadosDiesel.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
-                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
+                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, combustivel.tipo, combustivel.data,
+                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
             dados.writeCSV(File("dadosHistoricos/dadosDiesel.csv"))
         } else if (combustivel.tipo.uppercase() == "DIESEL S10") {
             dados = DataFrame.readCSV("dadosHistoricos/dadosDieselS10.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
-                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
+                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, combustivel.tipo, combustivel.data,
+                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
             dados.writeCSV(File("dadosHistoricos/dadosDieselS10.csv"))
         } else if (combustivel.tipo.uppercase() == "GASOLINA") {
-            dados = DataFrame.readCSV("/home/bruno/Downloads/DadosHistoricos/dados202101ge.csv")
+            dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaComum.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
-                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
-            dados.writeCSV(File("/home/bruno/Downloads/DadosHistoricos/dados202101ge.csv"))
+                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, combustivel.tipo, combustivel.data,
+                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
+            dados.writeCSV(File("dadosHistoricos/dadosGasolinaComum.csv"))
         } else if (combustivel.tipo.uppercase() == "GASOLINA ADITIVADA") {
-            dados = DataFrame.readCSV("dadosHistoricos/dadosGasolinaAditivada.csv")
+            dados = DataFrame.readCSV("dadosHistoricos/dadosAdidtivada.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
-                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
-            dados.writeCSV(File("dadosHistoricos/GasolinaAditivada.csv"))
+                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, combustivel.tipo, combustivel.data,
+                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
+            dados.writeCSV(File("dadosHistoricos/dadosGasolinaAditivada.csv"))
         } else if (combustivel.tipo.uppercase() == "ETANOL") {
             dados = DataFrame.readCSV("dadosHistoricos/dadosEtanol.csv")
             dados = dados.addRow(listOf(combustivel.local.regiao, combustivel.local.siglaEstado, combustivel.local.municipio,
-                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, tipo, combustivel.data,
-                combustivel.valor.toString(), cotacaoPetroleo.valor.toString(), cotacaoDolar.valor.toString()))
-            dados.writeCSV(File("dadosHistoricos/dadosEtanol.csv"))
-        }
+                combustivel.local.nome, combustivel.local.cnpj, combustivel.local.bandeira, combustivel.tipo, combustivel.data,
+                combustivel.valor, cotacaoPetroleo.valor, cotacaoDolar.valor))
+            dados.writeCSV(File("dadosHistoricos/dadosEtanol.csv"))        }
         return combustivel
     }
 
