@@ -1,1 +1,1 @@
-web: java -jar out/artifacts/PrecosCombustiveis_jar/PrecosCombustiveis.jar
+web: java -jar out/artifacts/PrecosCombustiveis_main_jar/PrecosCombustiveis.main.jar
