@@ -1,1 +1,1 @@
-web: java -jar out/artifacts/PrecosCombustiveis_main_jar/PrecosCombustiveis.main.jar
+web: java -jar build/libs/marketapi-shadow-1.0-SNAPSHOT.jar
