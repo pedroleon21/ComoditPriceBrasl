@@ -18,8 +18,8 @@ dólar e do petróleo brent.
 
 ## *Endpoints*
 
-A partir da porta 9999 do *localhost* estão disponíveis 
-os seguintes *endpoints*:
+A partir da porta 8080 do *localhost* ou do endereço Heroku
+https://precoscombustiveisapi.herokuapp.com estão disponíveis os seguintes *endpoints*:
 
 * **POST - /usuario - Cadastrar um usuário** 
   
